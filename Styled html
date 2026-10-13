@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JOSEPH — Book an Appointment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal-50: #E1F5EE;
+  --teal-100: #9FE1CB;
+  --teal-600: #0F6E56;
+  --teal-800: #085041;
+  --blue-50: #E6F1FB;
+  --blue-600: #185FA5;
+  --gray-50: #F1EFE8;
+  --gray-100: #D3D1C7;
+  --gray-400: #888780;
+  --gray-600: #5F5E5A;
+  --gray-900: #2C2C2A;
+  --red-600: #A32D2D;
+  --surface: #ffffff;
+  --page-bg: #F7F9FC;
+  --radius: 8px;
+}
+
+html, body {
+  min-height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: var(--page-bg);
+  color: var(--gray-900);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 1.15rem;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+label .req {
+  color: var(--teal-600);
+  margin-left: 2px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--gray-900);
+  background: #FAFBFD;
+  border: 0.5px solid #CDD3DE;
+  border-radius: var(--radius);
+  padding: 0.65rem 0.85rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--gray-400);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--teal-600);
+  box-shadow: 0 0 0 3px rgba(15, 110, 86, 0.1);
+  background: white;
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  padding-right: 2.2rem;
+  cursor: pointer;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   APPOINTMENT VIEW
+========================================================= */
+
+.site-header {
+  background: var(--teal-600);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.site-header .brand-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.site-header svg {
+  flex-shrink: 0;
+}
+
+.site-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+.site-header span.tagline {
+  font-size: 0.75rem;
+  color: var(--teal-100);
+  display: block;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.page-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.page-intro {
+  margin-bottom: 2rem;
+}
+
+.page-intro h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--teal-800);
+  margin-bottom: 0.35rem;
+}
+
+.page-intro p {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--gray-400);
+}
+
+.step.active {
+  color: var(--teal-600);
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  background: white;
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+.step.active .step-num {
+  background: var(--teal-600);
+  border-color: var(--teal-600);
+  color: white;
+}
+
+.step-line {
+  flex: 1;
+  height: 1px;
+  background: var(--gray-100);
+  margin: 0 8px;
+}
+
+.card {
+  background: var(--surface);
+  border: 0.5px solid #DDE3EC;
+  border-radius: 12px;
+  padding: 2rem 2.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.card-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal-600);
+  margin-bottom: 1.35rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--teal-50);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+}
+
+.form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.radio-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.radio-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0.45rem 0.9rem;
+  border: 0.5px solid #CDD3DE;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #FAFBFD;
+  user-select: none;
+}
+
+.radio-pill input {
+  display: none;
+}
+
+.radio-pill:hover {
+  border-color: var(--teal-600);
+  color: var(--teal-600);
+}
+
+.radio-pill.checked {
+  background: var(--teal-50);
+  border-color: var(--teal-600);
+  color: var(--teal-800);
+  font-weight: 500;
+}
+
+.radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-pill.checked .radio-dot::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--teal-600);
+}
+
+.info-box {
+  background: var(--blue-50);
+  border-left: 3px solid var(--blue-600);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: var(--blue-600);
+  line-height: 1.55;
+  margin-top: 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 0 0;
+}
+
+.btn-submit {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  background: var(--teal-600);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.7rem 2rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.btn-submit:hover {
+  background: var(--teal-800);
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+}
+
+.helper {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+
+.field-error {
+  display: none;
+  font-size: 0.75rem;
+  color: var(--red-600);
+  margin-top: 2px;
+}
+
+.field.has-error input {
+  border-color: var(--red-600) !important;
+  box-shadow: 0 0 0 3px rgba(163, 45, 45, 0.08) !important;
+}
+
+.field.has-error .field-error {
+  display: block;
+}
+
+.urgency-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.urgency-btn {
+  flex: 1;
+  padding: 0.6rem;
+  text-align: center;
+  border: 0.5px solid #CDD3DE;
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #FAFBFD;
+  color: var(--gray-600);
+  transition: all 0.15s;
+}
+
+.urgency-btn.selected-routine {
+  background: var(--teal-50);
+  border-color: var(--teal-600);
+  color: var(--teal-800);
+}
+
+.urgency-btn.selected-urgent {
+  background: #FEF3C7;
+  border-color: #D97706;
+  color: #92400E;
+}
+
+.urgency-btn.selected-emergency {
+  background: #FEE2E2;
+  border-color: var(--red-600);
+  color: var(--red-600);
+}
+
+.consent-label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.83rem;
+  color: var(--gray-600);
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.consent-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: var(--teal-600);
+  cursor: pointer;
+}
+
+.consent-label a {
+  color: var(--teal-600);
+  text-decoration: none;
+}
+
+.consent-label a:hover {
+  text-decoration: underline;
+}
+
+.footer-note {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--gray-400);
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+
+.footer-note strong {
+  color: var(--gray-600);
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 1.35rem 1.1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid .full {
+    grid-column: 1;
+  }
+
+  .page-wrap {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .steps {
+    display: none;
+  }
+}
+
+#urgencyError {
+  display: none;
+}
+
+</style>
+</head>
+<body>
+<div id="apptView">
+
+<header class="site-header">
+  <div class="brand-block">
+    <svg width="30" height="30" viewBox="0 0 32 32" fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="6" fill="white" fill-opacity="0.15"/>
+      <path d="M16 6v20M6 16h20" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h1>JOSEPH</h1>
+      <span class="tagline">Outpatient Appointment Services</span>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap" role="main">
+
+  <div class="page-intro">
+    <h2>Book an appointment</h2>
+    <p>Fill in the form below and our team will confirm your slot within 2 hours on working days.</p>
+  </div>
+
+  <div class="steps" aria-label="Form steps">
+    <div class="step active"><div class="step-num">1</div> Patient info</div>
+  </div>
+
+  <form id="apptForm" novalidate>
+
+    <!-- Patient Details -->
+    <div class="card">
+      <div class="card-title">Patient details</div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="firstName">First name <span class="req">*</span></label>
+          <input type="text" id="firstName" name="firstName" placeholder="*Rahul (example)" maxlength="40" required />
+          <span class="field-error" id="firstNameError">Name should contain letters only, no punctuation.</span>
+        </div>
+
+        <div class="field">
+          <label for="lastName">Last name <span class="req">*</span></label>
+          <input type="text" id="lastName" name="lastName" placeholder="*Sharma (example)" maxlength="40" required />
+          <span class="field-error" id="lastNameError">Name should contain letters only, no punctuation.</span>
+        </div>
+
+        <div class="field">
+          <label for="dob">Date of birth <span class="req">*</span></label>
+          <input type="date" id="dob" name="dob" required />
+        </div>
+
+        <div class="field">
+          <label>Gender <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-pill" id="gMale">
+              <input type="radio" name="gender" value="male" />
+              <span class="radio-dot"></span> Male
+            </label>
+            <label class="radio-pill" id="gFemale">
+              <input type="radio" name="gender" value="female" />
+              <span class="radio-dot"></span> Female
+            </label>
+            <label class="radio-pill" id="gOther">
+              <input type="radio" name="gender" value="other" />
+              <span class="radio-dot"></span> Other
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone number <span class="req">*</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="*9876543210 (example)" maxlength="20" required />
+          <span class="field-error" id="phoneError">Please enter a valid 10-digit phone number (numbers only).</span>
+        </div>
+
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="*rahul@email.com (example)" />
+          <span class="helper">Confirmation will be sent here</span>
+        </div>
+
+        <div class="field full">
+          <label for="address">Home address</label>
+          <input type="text" id="address" name="address" placeholder="*House no., street, city (example)" />
+        </div>
+
+        <div class="field">
+          <label for="bloodGroup">Blood group</label>
+          <select id="bloodGroup" name="bloodGroup">
+            <option value="">Select</option>
+            <option>A+</option>
+            <option>A−</option>
+            <option>B+</option>
+            <option>B−</option>
+            <option>AB+</option>
+            <option>AB−</option>
+            <option>O+</option>
+            <option>O−</option>
+            <option>Unknown</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="idType">ID type</label>
+          <select id="idType" name="idType">
+            <option value="">Select</option>
+            <option>Aadhaar card</option>
+            <option>PAN card</option>
+            <option>Passport</option>
+            <option>Voter ID</option>
+            <option>Driving licence</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="idNumber">ID number</label>
+          <input type="text" id="idNumber" name="idNumber" placeholder="*XXXX XXXX XXXX (example)" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Appointment Details -->
+    <div class="card">
+      <div class="card-title">Appointment details</div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="department">Department <span class="req">*</span></label>
+          <select id="department" name="department" required>
+            <option value="">Select department</option>
+            <option>General Medicine</option>
+            <option>Cardiology</option>
+            <option>Orthopaedics</option>
+            <option>Gynaecology &amp; Obstetrics</option>
+            <option>Paediatrics</option>
+            <option>Dermatology</option>
+            <option>Ophthalmology</option>
+            <option>ENT</option>
+            <option>Neurology</option>
+            <option>Gastroenterology</option>
+            <option>Oncology</option>
+            <option>Psychiatry</option>
+            <option>Urology</option>
+            <option>Dental</option>
+            <option>Physiotherapy</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="doctor">Preferred doctor</label>
+          <select id="doctor" name="doctor">
+            <option value="">No preference</option>
+            <option>Dr. Anjali Mehta</option>
+            <option>Dr. Rakesh Gupta</option>
+            <option>Dr. Priya Nair</option>
+            <option>Dr. Suresh Iyer</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="apptDate">Preferred date <span class="req">*</span></label>
+          <input type="date" id="apptDate" name="apptDate" required />
+        </div>
+
+        <div class="field">
+          <label for="apptTime">Preferred time <span class="req">*</span></label>
+          <select id="apptTime" name="apptTime" required>
+            <option value="">Select slot</option>
+            <option>08:00 – 09:00</option>
+            <option>09:00 – 10:00</option>
+            <option>10:00 – 11:00</option>
+            <option>11:00 – 12:00</option>
+            <option>14:00 – 15:00</option>
+            <option>15:00 – 16:00</option>
+            <option>16:00 – 17:00</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label>Visit type <span class="req">*</span></label>
+          <div class="urgency-row">
+            <div class="urgency-btn" data-urgency="routine" onclick="selectUrgency(this, 'routine')">■ Routine</div>
+            <div class="urgency-btn" data-urgency="urgent" onclick="selectUrgency(this, 'urgent')">■ Urgent</div>
+            <div class="urgency-btn" data-urgency="emergency" onclick="selectUrgency(this, 'emergency')">■ Emergency</div>
+          </div>
+          <input type="hidden" id="urgency" name="urgency" value="" />
+          <div class="info-box" id="urgencyInfo" style="display:none;"></div>
+          <span class="field-error" id="urgencyError">Please choose a visit type.</span>
+        </div>
+
+        <div class="field full">
+          <label for="symptoms">Reason / symptoms <span class="req">*</span></label>
+          <textarea id="symptoms" name="symptoms" placeholder="Briefly describe your symptoms or reason for visit…" required></textarea>
+        </div>
+
+        <div class="field">
+          <label>First visit or follow-up?</label>
+          <div class="radio-group">
+            <label class="radio-pill" id="vFirst">
+              <input type="radio" name="visitType" value="first" />
+              <span class="radio-dot"></span> First visit
+            </label>
+            <label class="radio-pill" id="vFollowup">
+              <input type="radio" name="visitType" value="followup" />
+              <span class="radio-dot"></span> Follow-up
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="insurance">Insurance / CGHS</label>
+          <select id="insurance" name="insurance">
+            <option value="">Select</option>
+            <option>No insurance (self-pay)</option>
+            <option>CGHS</option>
+            <option>ESIC</option>
+            <option>Star Health</option>
+            <option>HDFC Ergo</option>
+            <option>New India Assurance</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="allergies">Known allergies or current medications</label>
+          <textarea id="allergies" name="allergies" placeholder="List any drug allergies or medicines you are currently taking…" style="min-height: 70px;"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Emergency Contact -->
+    <div class="card">
+      <div class="card-title">Emergency contact</div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label for="ecName">Contact name <span class="req">*</span></label>
+          <input type="text" id="ecName" name="ecName" placeholder="*Full name (example)" maxlength="40" required />
+          <span class="field-error" id="ecNameError">Name should contain letters only, no punctuation.</span>
+        </div>
+
+        <div class="field">
+          <label for="ecRelation">Relation <span class="req">*</span></label>
+          <select id="ecRelation" name="ecRelation" required>
+            <option value="">Select</option>
+            <option>Spouse</option>
+            <option>Parent</option>
+            <option>Child</option>
+            <option>Sibling</option>
+            <option>Friend</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="ecPhone">Contact number <span class="req">*</span></label>
+          <input type="tel" id="ecPhone" name="ecPhone" placeholder="*9876543210 (example)" maxlength="20" required />
+          <span class="field-error" id="ecPhoneError">Please enter a valid 10-digit phone number (numbers only).</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Consent -->
+    <div class="card" style="padding: 1.5rem 2.25rem;">
+      <label class="consent-label">
+        <input type="checkbox" id="consent" name="consent" required />
+        I confirm the information above is accurate and I consent to JOSEPH storing and using it to manage my appointment and treatment, in accordance with the <a href="#">Privacy Policy</a>.
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-submit">Save &amp; continue →</button>
+    </div>
+
+  </form>
+
+  <p class="footer-note">
+    Questions? Call <strong>1800-123-4567</strong> (toll-free, Mon–Sat 8 am – 8 pm).<br>
+    For emergencies, go directly to our A&amp;E department or dial <strong>112</strong>.
+  </p>
+
+</main>
+</div>
+
+<script>
+const currentUser = 'Website';
+
+// ---------- Field validation: names (no punctuation) & phone (digit limit) ----------
+function attachNameValidation(inputId, errorId) {
+  const input = document.getElementById(inputId);
+  const field = input.closest('.field');
+
+  input.addEventListener('input', () => {
+    const original = input.value;
+    const cleaned = original.replace(/[^A-Za-z ]/g, '');
+
+    if (cleaned !== original) {
+      field.classList.add('has-error');
+    } else {
+      field.classList.remove('has-error');
+    }
+
+    input.value = cleaned;
+  });
+
+  input.addEventListener('blur', () => field.classList.remove('has-error'));
+}
+
+function attachPhoneValidation(inputId, errorId, maxDigits) {
+  const input = document.getElementById(inputId);
+  const field = input.closest('.field');
+
+  function validate() {
+    const original = input.value;
+    const digitsOnly = original.replace(/[^0-9]/g, '');
+    const hadNonDigit = digitsOnly !== original;
+    const overLimit = digitsOnly.length > maxDigits;
+    const exceeded = hadNonDigit || overLimit;
+
+    const truncated = digitsOnly.slice(0, maxDigits);
+
+    if (truncated !== input.value) {
+      input.value = truncated;
+    }
+
+    field.classList.toggle('has-error', exceeded);
+  }
+
+  input.addEventListener('input', validate);
+
+  input.addEventListener('blur', () => {
+    if (input.value.length > 0 && input.value.length < maxDigits) {
+      field.classList.add('has-error');
+    }
+  });
+}
+
+attachNameValidation('firstName', 'firstNameError');
+attachNameValidation('lastName', 'lastNameError');
+attachNameValidation('ecName', 'ecNameError');
+
+attachPhoneValidation('phone', 'phoneError', 10);
+attachPhoneValidation('ecPhone', 'ecPhoneError', 10);
+
+// ---------- Appointment form behaviour ----------
+const urgencyMessages = {
+  routine: "Standard appointments are available within 3–5 working days.",
+  urgent: "Urgent slots are within 24–48 hours. Our triage team will call you to confirm.",
+  emergency: "If this is a life-threatening emergency, please call 112 or come directly to A&E."
+};
+
+function selectUrgency(el, type) {
+  document.getElementById('urgency').value = type;
+  document.getElementById('urgencyError').style.display = 'none';
+
+  document.querySelectorAll('.urgency-btn').forEach(b => {
+    b.className = 'urgency-btn';
+  });
+
+  el.classList.add('selected-' + type);
+
+  const box = document.getElementById('urgencyInfo');
+  box.textContent = urgencyMessages[type];
+  box.style.display = 'block';
+}
+
+document.querySelectorAll('.radio-pill input').forEach(radio => {
+  radio.addEventListener('change', () => {
+    document.querySelectorAll(`input[name="${radio.name}"]`).forEach(r => {
+      r.closest('.radio-pill').classList.remove('checked');
+    });
+
+    radio.closest('.radio-pill').classList.add('checked');
+  });
+});
+
+const today = new Date().toISOString().split('T')[0];
+const apptDateInput = document.getElementById('apptDate');
+
+if (apptDateInput) {
+  apptDateInput.setAttribute('min', today);
+}
+
+const apptForm =
+document.getElementById('apptForm');
+
+apptForm.addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const required = this.querySelectorAll('[required]');
+  let valid = true;
+
+  required.forEach(el => {
+    if (
+      (el.type === 'checkbox' && !el.checked) ||
+      (el.type !== 'checkbox' && !el.value.trim())
+    ) {
+      el.style.borderColor = '#A32D2D';
+      valid = false;
+    } else {
+      el.style.borderColor = '';
+    }
+  });
+
+  if (!document.getElementById('urgency').value) {
+    document.getElementById('urgencyError').style.display = 'block';
+    valid = false;
+  }
+
+  if (this.querySelectorAll('.field.has-error').length > 0) {
+    valid = false;
+  }
+
+  ['phone', 'ecPhone'].forEach(id => {
+    const phoneInput =
+document.getElementById(id);
+
+    if (phoneInput.value && phoneInput.value.length !== 10) {
+      phoneInput.closest('.field').classList.add('has-error');
+      valid = false;
+    }
+  });
+
+  if (!valid) {
+    alert('Please fill in all required fields correctly.');
+    return;
+  }
+
+  // ---- send to save.php (MySQL on XAMPP) ----
+  const data = new FormData(this);
+  data.append('savedBy', currentUser);
+
+  const btn = this.querySelector('.btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    const res = await fetch('save.php', {
+      method: 'POST',
+      body: data
+    });
+
+    const out = await res.json();
+
+    if (out.success) {
+      alert(
+        'Thank you! Your appointment request has been saved (Ref #' +out.id +
+        '). We will confirm your slot shortly.'
+      );
+
+      this.reset();
+
+      document.querySelectorAll('.radio-pill').forEach(p => {
+        p.classList.remove('checked');
+      });
+
+      document.querySelectorAll('.urgency-btn').forEach(b => {
+        b.className = 'urgency-btn';
+      });
+
+      document.getElementById('urgency').value = '';
+      document.getElementById('urgencyInfo').style.display = 'none';
+    } else {
+      alert('Could not save: ' + out.message);
+    }
+  } catch (err) {
+    alert('Could not reach save.php. Open the site via http://localhost/joseph_hospital/ (not by double-clicking the file) and make sure Apache & MySQL are running in XAMPP.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save & continue→';
+  }
+});
+</script>
+
+</body>
+</html>
+
+        
